@@ -7,7 +7,8 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 import pytz
-import pandas_ta as ta
+from ta import add_all_ta_features
+from ta.utils import dropna
 
 ##########################################################################################
 ## PART 1: Define Functions for Pulling, Processing, and Creating Technical Indicators ##
