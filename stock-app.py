@@ -10,6 +10,10 @@ import pytz
 from ta import add_all_ta_features
 from ta.utils import dropna
 
+df = pd.read_csv('https://github.com/bukosabino/ta/blob/7ffda486d574fcb5e8f6426a4d92cd115d17b7cf/test/data/datas.csv', sep=',')
+df = dropna(df)
+df = add_all_ta_features(
+    df, open="Open", high="High", low="Low", close="Close", volume="Volume_BTC", fillna=True)
 ##########################################################################################
 ## PART 1: Define Functions for Pulling, Processing, and Creating Technical Indicators ##
 ##########################################################################################
