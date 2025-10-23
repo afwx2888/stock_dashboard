@@ -7,10 +7,10 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 import pytz
-import ta-lib as ta
+import ta
 
 ##########################################################################################
-## PART 1: Define Functions for Pulling, Processing, and Creating Techincial Indicators ##
+## PART 1: Define Functions for Pulling, Processing, and Creating Technical Indicators ##
 ##########################################################################################
 
 # Fetch stock data based on the ticker, period, and interval
