@@ -7,13 +7,7 @@ import pandas as pd
 import yfinance as yf
 from datetime import datetime, timedelta
 import pytz
-from ta import add_all_ta_features
-from ta.utils import dropna
 
-df = pd.read_csv('https://github.com/bukosabino/ta/blob/7ffda486d574fcb5e8f6426a4d92cd115d17b7cf/test/data/datas.csv', sep=',')
-df = dropna(df)
-df = add_all_ta_features(
-    df, open="Open", high="High", low="Low", close="Close", volume="Volume_BTC", fillna=True)
 ##########################################################################################
 ## PART 1: Define Functions for Pulling, Processing, and Creating Technical Indicators ##
 ##########################################################################################
@@ -49,10 +43,6 @@ def calculate_metrics(data):
     return last_close, change, pct_change, high, low, volume
 
 # Add simple moving average (SMA) and exponential moving average (EMA) indicators
-def add_technical_indicators(data):
-    data['SMA_20'] = ta.trend.sma_indicator(data['Close'], window=20)
-    data['EMA_20'] = ta.trend.ema_indicator(data['Close'], window=20)
-    return data
 
 ###############################################
 ## PART 2: Creating the Dashboard App layout ##
@@ -71,7 +61,6 @@ st.sidebar.header('Chart Parameters')
 ticker = st.sidebar.text_input('Ticker', 'ADBE')
 time_period = st.sidebar.selectbox('Time Period', ['1d', '1wk', '1mo', '1y', 'max'])
 chart_type = st.sidebar.selectbox('Chart Type', ['Candlestick', 'Line'])
-indicators = st.sidebar.multiselect('Technical Indicators', ['SMA 20', 'EMA 20'])
 
 # Mapping of time periods to data intervals
 interval_mapping = {
@@ -89,7 +78,6 @@ interval_mapping = {
 if st.sidebar.button('Update'):
     data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
     data = process_data(data)
-    data = add_technical_indicators(data)
     
     last_close, change, pct_change, high, low, volume = calculate_metrics(data)
     
@@ -113,11 +101,6 @@ if st.sidebar.button('Update'):
         fig = px.line(data, x='Datetime', y='Close')
     
     # Add selected technical indicators to the chart
-    for indicator in indicators:
-        if indicator == 'SMA 20':
-            fig.add_trace(go.Scatter(x=data['Datetime'], y=data['SMA_20'], name='SMA 20'))
-        elif indicator == 'EMA 20':
-            fig.add_trace(go.Scatter(x=data['Datetime'], y=data['EMA_20'], name='EMA 20'))
     
     # Format graph
     fig.update_layout(title=f'{ticker} {time_period.upper()} Chart',
@@ -129,9 +112,6 @@ if st.sidebar.button('Update'):
     # Display historical data and technical indicators
     st.subheader('Historical Data')
     st.dataframe(data[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']])
-    
-    st.subheader('Technical Indicators')
-    st.dataframe(data[['Datetime', 'SMA_20', 'EMA_20']])
 
 
 # 2C: SIDEBAR PRICES ############
